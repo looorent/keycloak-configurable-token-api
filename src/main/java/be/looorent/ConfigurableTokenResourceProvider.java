@@ -1,6 +1,7 @@
 package be.looorent;
 
 import org.jboss.logging.Logger;
+import org.jboss.resteasy.spi.HttpRequest;
 import org.keycloak.events.EventBuilder;
 import org.keycloak.models.*;
 import org.keycloak.protocol.oidc.TokenManager;
@@ -9,14 +10,22 @@ import org.keycloak.representations.AccessTokenResponse;
 import org.keycloak.services.managers.AppAuthManager;
 import org.keycloak.services.managers.AuthenticationManager;
 import org.keycloak.services.resource.RealmResourceProvider;
+import org.keycloak.services.resources.Cors;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.OPTIONS;
 import javax.ws.rs.POST;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import java.util.Set;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static javax.ws.rs.core.MediaType.APPLICATION_JSON_TYPE;
+import static org.keycloak.services.resources.Cors.ACCESS_CONTROL_ALLOW_METHODS;
+import static org.keycloak.services.resources.Cors.ACCESS_CONTROL_ALLOW_ORIGIN;
 
 /**
  * @author Lorent Lempereur
@@ -42,10 +51,15 @@ public class ConfigurableTokenResourceProvider implements RealmResourceProvider 
     @Override
     public void close() {}
 
+    @OPTIONS
+    public Response preflight(@Context HttpRequest request) {
+        return Cors.add(request, Response.ok()).auth().preflight().allowedMethods("POST", "OPTIONS").build();
+    }
+
     @POST
     @Consumes(APPLICATION_JSON)
     @Produces(APPLICATION_JSON)
-    public AccessTokenResponse createToken(TokenConfiguration tokenConfiguration) {
+    public Response createToken(TokenConfiguration tokenConfiguration, @Context HttpRequest request) {
         RealmModel realm = session.getContext().getRealm();
         AuthenticationManager.AuthResult authenticated = new AppAuthManager().authenticateBearerToken(session, realm);
         UserModel user = authenticated.getUser();
@@ -55,7 +69,19 @@ public class ConfigurableTokenResourceProvider implements RealmResourceProvider 
 
         AccessToken token = createAccessToken(realm, user, userSession, client, clientSession);
         updateTokenExpiration(token, tokenConfiguration);
-        return buildResponse(realm, userSession, client, clientSession, token);
+        AccessTokenResponse response = buildResponse(realm, userSession, client, clientSession, token);
+
+        return buildCorsResponse(request, response);
+    }
+
+    private Response buildCorsResponse(@Context HttpRequest request, AccessTokenResponse response) {
+        Cors cors = Cors.add(request)
+                        .auth()
+                        .allowedMethods("POST")
+                        .auth()
+                        .exposedHeaders(ACCESS_CONTROL_ALLOW_METHODS, ACCESS_CONTROL_ALLOW_ORIGIN)
+                        .allowAllOrigins();
+        return cors.builder(Response.ok(response).type(APPLICATION_JSON_TYPE)).build();
     }
 
     private AccessToken createAccessToken(RealmModel realm,
