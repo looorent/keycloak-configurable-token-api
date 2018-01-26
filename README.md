@@ -1,10 +1,10 @@
-https://github.com/keycloak/keycloak-documentation/blob/master/securing_apps/topics/token-exchange/token-exchange.adoc
-
 # Keycloak Configuration Token REST API
 
 This Custom Keycloak REST API provides an extra endpoint to request a token that can override default configuration.
 
 It adds an endpoint `POST ${serverDomain}/auth/realms/${realm}/configurable-token`. Its configuration is provided in the request's body.
+
+This implementation is based on the token exchance principle, defined here: https://github.com/keycloak/keycloak-documentation/blob/master/securing_apps/topics/token-exchange/token-exchange.adoc
 
 ## Supported features
 
