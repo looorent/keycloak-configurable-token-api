@@ -1,0 +1,35 @@
+buildscript {
+    ext.keycloak_version = "3.4.2.Final"
+    repositories {
+        mavenCentral()
+    }
+}
+
+group "be.looorent"
+version "0.1"
+
+apply plugin: "java"
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compileOnly group: "org.keycloak",                name: "keycloak-core",               version: keycloak_version
+    compileOnly group: "org.keycloak",                name: "keycloak-server-spi",         version: keycloak_version
+    compileOnly group: "org.keycloak",                name: "keycloak-server-spi-private", version: keycloak_version
+    compileOnly group: "org.keycloak",                name: "keycloak-services",           version: keycloak_version
+    compileOnly group: "org.jboss.spec.javax.ws.rs",  name: "jboss-jaxrs-api_2.0_spec",    version: "1.0.1.Final"
+    compileOnly group: "org.jboss.logging",           name: "jboss-logging",               version: "3.3.1.Final"
+}
+
+task copyJar {
+    copy {
+        into "dist"
+        from "build/libs/keycloak-configurable-token-${version}.jar"
+    }
+}
+
+build.finalizedBy(copyJar)
