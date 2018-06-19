@@ -6,6 +6,13 @@ It adds an endpoint `POST ${serverDomain}/auth/realms/${realm}/configurable-toke
 
 This implementation is based on the token exchance principle, defined here: https://github.com/keycloak/keycloak-documentation/blob/master/securing_apps/topics/token-exchange/token-exchange.adoc
 
+## Keycloak Support
+
+Pay attention to your Keycloak version!
+
+* For Keycloak `3.x.x`, use version <= 0.1 of this JAR. 
+* For Keycloak `4.x.x`, use version > 0.1 of this JAR.
+
 ## Supported features
 
 * Ask for a short-lived lifespan
@@ -14,23 +21,23 @@ This implementation is based on the token exchance principle, defined here: http
 
 ### Standalone install
 
-* Download `dist/keycloak-configurable-token-0.1.jar` from this repository
+* Download `dist/keycloak-configurable-token-0.2.jar` from this repository
 * Modify `$KEYCLOAK_HOME/standalone/configuration/standalone.xml` and this node in `<providers>`
     ```xml
     <provider>module:be.looorent.keycloak-configurable-token</provider>
     ```
 * Run `jboss-cli` to add this module and define their dependencies:
     ```bash
-       $ jboss-cli.sh --command="module add --name=be.looorent.keycloak-configurable-token --resources=keycloak-configurable-token-0.1.jar --dependencies=org.keycloak.keycloak-core,org.keycloak.keycloak-server-spi,org.keycloak.keycloak-server-spi-private,org.keycloak.keycloak-services,org.jboss.logging,javax.ws.rs.api"
+       $ jboss-cli.sh --command="module add --name=be.looorent.keycloak-configurable-token --resources=keycloak-configurable-token-0.2.jar --dependencies=org.keycloak.keycloak-core,org.keycloak.keycloak-server-spi,org.keycloak.keycloak-server-spi-private,org.keycloak.keycloak-services,org.jboss.logging,javax.ws.rs.api"
     ```
 
 ### Docker install
 
 If you are using the official Docker image, here is a `Dockerfile` that automate the install procedure described above:
 ```
-FROM jboss/keycloak:3.4.2.Final
+FROM jboss/keycloak:4.0.0.Final
 
-COPY keycloak-configurable-token-0.1.jar /tmp/keycloak-configurable-token.jar
+COPY keycloak-configurable-token-0.2.jar /tmp/keycloak-configurable-token.jar
 RUN /opt/jboss/keycloak/bin/jboss-cli.sh --command="module add --name=be.looorent.keycloak-configurable-token --resources=/tmp/keycloak-configurable-token.jar --dependencies=org.keycloak.keycloak-core,org.keycloak.keycloak-common,org.keycloak.keycloak-server-spi,org.keycloak.keycloak-server-spi-private,org.keycloak.keycloak-services,org.jboss.logging,javax.ws.rs.api"
 RUN sed -i -- 's/classpath:${jboss.home.dir}\/providers\/\*/classpath:${jboss.home.dir}\/providers\/*<\/provider><provider>module:be.looorent.keycloak-configurable-token/g' /opt/jboss/keycloak/standalone/configuration/standalone.xml
 ```

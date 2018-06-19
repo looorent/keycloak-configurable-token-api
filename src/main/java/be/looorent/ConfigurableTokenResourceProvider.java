@@ -17,15 +17,13 @@ import javax.ws.rs.OPTIONS;
 import javax.ws.rs.POST;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
-import java.util.Set;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON_TYPE;
 import static org.keycloak.services.resources.Cors.ACCESS_CONTROL_ALLOW_METHODS;
 import static org.keycloak.services.resources.Cors.ACCESS_CONTROL_ALLOW_ORIGIN;
+import static org.keycloak.services.util.DefaultClientSessionContext.fromClientSessionScopeParameter;
 
 /**
  * @author Lorent Lempereur
@@ -89,9 +87,9 @@ public class ConfigurableTokenResourceProvider implements RealmResourceProvider 
                                           UserSessionModel userSession,
                                           ClientModel client,
                                           AuthenticatedClientSessionModel clientSession) {
-        Set<RoleModel> requestedRoles = user.getRoleMappings();
         LOG.infof("Configurable token requested for username=%s and client=%s on realm=%s", user.getUsername(), client.getClientId(), realm.getName());
-        return tokenManager.createClientAccessToken(session, requestedRoles, realm, client, user, userSession, clientSession);
+        ClientSessionContext clientSessionContext = fromClientSessionScopeParameter(clientSession);
+        return tokenManager.createClientAccessToken(session, realm, client, user, userSession, clientSessionContext);
     }
 
     private AccessTokenResponse buildResponse(RealmModel realm,
@@ -100,7 +98,8 @@ public class ConfigurableTokenResourceProvider implements RealmResourceProvider 
                                               AuthenticatedClientSessionModel clientSession,
                                               AccessToken token) {
         EventBuilder eventBuilder = new EventBuilder(realm, session, session.getContext().getConnection());
-        return tokenManager.responseBuilder(realm, client, eventBuilder, session, userSession, clientSession)
+        ClientSessionContext clientSessionContext = fromClientSessionScopeParameter(clientSession);
+        return tokenManager.responseBuilder(realm, client, eventBuilder, session, userSession, clientSessionContext)
                 .accessToken(token)
                 .build();
     }
