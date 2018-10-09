@@ -17,7 +17,27 @@ Pay attention to your Keycloak version!
 
 * Ask for a short-lived lifespan
 
-## Deployment
+
+## Deployment (`>= 0.3`)
+
+### Standalone install
+
+* Download `dist/keycloak-configurable-token-0.3.jar` from this repository
+* Add it to `$KEYCLOAK_HOME/standalone/deployments/`
+
+### Docker install
+
+If you are using the official Docker image, here is a `Dockerfile` that automate the install procedure described above:
+```
+FROM jboss/keycloak:4.5.0.Final
+
+COPY keycloak-configurable-token-0.3.jar /opt/jboss/keycloak/standalone/deployments/keycloak-configurable-token.jar
+```
+
+## Deployment (`< 0.3`)
+
+Before `0.3`, this library cannot be deployed properly as a module with dependencies without using the CLI.
+Therefore using the CLI is mandatory.
 
 ### Standalone install
 
@@ -35,9 +55,9 @@ Pay attention to your Keycloak version!
 
 If you are using the official Docker image, here is a `Dockerfile` that automate the install procedure described above:
 ```
-FROM jboss/keycloak:4.0.0.Final
+FROM jboss/keycloak:4.5.0.Final
 
-COPY keycloak-configurable-token-0.2.jar /tmp/keycloak-configurable-token.jar
+COPY keycloak-configurable-token-0.3.jar /tmp/keycloak-configurable-token.jar
 RUN /opt/jboss/keycloak/bin/jboss-cli.sh --command="module add --name=be.looorent.keycloak-configurable-token --resources=/tmp/keycloak-configurable-token.jar --dependencies=org.keycloak.keycloak-core,org.keycloak.keycloak-common,org.keycloak.keycloak-server-spi,org.keycloak.keycloak-server-spi-private,org.keycloak.keycloak-services,org.jboss.logging,javax.ws.rs.api"
 RUN sed -i -- 's/classpath:${jboss.home.dir}\/providers\/\*/classpath:${jboss.home.dir}\/providers\/*<\/provider><provider>module:be.looorent.keycloak-configurable-token/g' /opt/jboss/keycloak/standalone/configuration/standalone.xml
 ```
