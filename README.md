@@ -16,13 +16,13 @@ Pay attention to your Keycloak version!
 ## Supported features
 
 * Ask for a short-lived lifespan
-
+* Ask for a long-lived lifespan
 
 ## Deployment (`>= 0.3`)
 
 ### Standalone install
 
-* Download `dist/keycloak-configurable-token-0.3.jar` from this repository
+* Download `dist/keycloak-configurable-token-0.4.jar` from this repository
 * Add it to `$KEYCLOAK_HOME/standalone/deployments/`
 
 ### Docker install
@@ -31,13 +31,19 @@ If you are using the official Docker image, here is a `Dockerfile` that automate
 ```
 FROM jboss/keycloak:4.5.0.Final
 
-COPY keycloak-configurable-token-0.3.jar /opt/jboss/keycloak/standalone/deployments/keycloak-configurable-token.jar
+COPY keycloak-configurable-token-0.4.jar /opt/jboss/keycloak/standalone/deployments/keycloak-configurable-token.jar
 ```
 
 ## Deployment (`< 0.3`)
 
 Before `0.3`, this library cannot be deployed properly as a module with dependencies without using the CLI.
 Therefore using the CLI is mandatory.
+
+### Environment variables
+
+| Option | Default Value | Type | Required? | Description  | Example |
+| ---- | ----- | ------ | ----- | ------ | ----- |
+| `KEYCLOAK_LONG_LIVED_TOKEN_ALLOWED` | `false`| Boolean | Optional | Whether or not users can request tokens with a longer lifetime than the Keycloak configuration. | `true` |
 
 ### Standalone install
 
@@ -57,7 +63,7 @@ If you are using the official Docker image, here is a `Dockerfile` that automate
 ```
 FROM jboss/keycloak:4.5.0.Final
 
-COPY keycloak-configurable-token-0.3.jar /tmp/keycloak-configurable-token.jar
+COPY keycloak-configurable-token-0.4.jar /tmp/keycloak-configurable-token.jar
 RUN /opt/jboss/keycloak/bin/jboss-cli.sh --command="module add --name=be.looorent.keycloak-configurable-token --resources=/tmp/keycloak-configurable-token.jar --dependencies=org.keycloak.keycloak-core,org.keycloak.keycloak-common,org.keycloak.keycloak-server-spi,org.keycloak.keycloak-server-spi-private,org.keycloak.keycloak-services,org.jboss.logging,javax.ws.rs.api"
 RUN sed -i -- 's/classpath:${jboss.home.dir}\/providers\/\*/classpath:${jboss.home.dir}\/providers\/*<\/provider><provider>module:be.looorent.keycloak-configurable-token/g' /opt/jboss/keycloak/standalone/configuration/standalone.xml
 ```
@@ -81,13 +87,23 @@ RUN sed -i -- 's/classpath:${jboss.home.dir}\/providers\/\*/classpath:${jboss.ho
 ### Specify a short-lived token
 
 Request's body must be in JSON an include an attribute `tokenLifespanInSeconds` (that must be strictly positive).
-If `tokenLifespanInSeconds` exceeds the default Keycloak `Token Lifespan` (usually 300 seconds), it will be ignored.
 
 Example using CURL:
 ```
     $ curl -X POST -d '{ "tokenLifespanInSeconds": 20}' -H "Content-Type: application/json" -H "Authorization: Bearer <user-access-token>" http://auth.service.io/auth/realms/a-realm/configurable-token
 ```
 
+### Specify a long-lived token
+
+Request's body must be in JSON an include an attribute `tokenLifespanInSeconds` (that must be strictly positive). 
+A very long lifespan (limited to the Java `integer` type) can be provided. For example: `31556952` means `1 year`.
+
+The environment variable named `KEYCLOAK_LONG_LIVED_TOKEN_ALLOWED` must be set to `true`, otherwise `tokenLifespanInSeconds` will be ignored.
+
+Example using CURL:
+```
+    $ curl -X POST -d '{ "tokenLifespanInSeconds": 63113904}' -H "Content-Type: application/json" -H "Authorization: Bearer <user-access-token>" http://auth.service.io/auth/realms/a-realm/configurable-token
+```
 
 ## Limits
 

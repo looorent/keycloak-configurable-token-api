@@ -35,10 +35,12 @@ public class ConfigurableTokenResourceProvider implements RealmResourceProvider 
 
     private final KeycloakSession session;
     private final TokenManager tokenManager;
+    private final ConfigurationTokenResourceConfiguration configuration;
 
-    ConfigurableTokenResourceProvider(KeycloakSession session) {
+    ConfigurableTokenResourceProvider(KeycloakSession session, ConfigurationTokenResourceConfiguration configuration) {
         this.session = session;
         this.tokenManager = new TokenManager();
+        this.configuration = configuration;
     }
 
     @Override
@@ -105,6 +107,6 @@ public class ConfigurableTokenResourceProvider implements RealmResourceProvider 
     }
 
     private void updateTokenExpiration(AccessToken token, TokenConfiguration tokenConfiguration) {
-        token.expiration(tokenConfiguration.computeTokenExpiration(token.getExpiration()));
+        token.expiration(tokenConfiguration.computeTokenExpiration(token.getExpiration(), configuration.isLongLivedTokenAllowed()));
     }
 }

@@ -2,6 +2,7 @@
 *.class
 .gradle
 build
+out
 
 ## IntelliJ
 .idea

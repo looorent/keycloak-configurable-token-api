@@ -22,10 +22,10 @@ public class TokenConfiguration {
         this.tokenLifespanInSeconds = tokenLifespanInSeconds;
     }
 
-    public int computeTokenExpiration(int maxExpiration) {
+    public int computeTokenExpiration(int maxExpiration, boolean longLivedTokenAllowed) {
         return ofNullable(tokenLifespanInSeconds)
                 .map(lifespan -> currentTime() + lifespan)
-                .map(requestedExpiration -> min(maxExpiration, requestedExpiration))
+                .map(requestedExpiration -> longLivedTokenAllowed ? requestedExpiration : min(maxExpiration, requestedExpiration))
                 .orElse(maxExpiration);
     }
 }
