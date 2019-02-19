@@ -22,7 +22,7 @@ Pay attention to your Keycloak version!
 
 ### Standalone install
 
-* Download `dist/keycloak-configurable-token-0.4.jar` from this repository
+* Download `dist/keycloak-configurable-token-0.5.jar` from this repository
 * Add it to `$KEYCLOAK_HOME/standalone/deployments/`
 
 ### Docker install
@@ -31,7 +31,7 @@ If you are using the official Docker image, here is a `Dockerfile` that automate
 ```
 FROM jboss/keycloak:4.5.0.Final
 
-COPY keycloak-configurable-token-0.4.jar /opt/jboss/keycloak/standalone/deployments/keycloak-configurable-token.jar
+COPY keycloak-configurable-token-0.5.jar /opt/jboss/keycloak/standalone/deployments/keycloak-configurable-token.jar
 ```
 
 ## Deployment (`< 0.3`)
@@ -43,7 +43,7 @@ Therefore using the CLI is mandatory.
 
 | Option | Default Value | Type | Required? | Description  | Example |
 | ---- | ----- | ------ | ----- | ------ | ----- |
-| `KEYCLOAK_LONG_LIVED_TOKEN_ALLOWED` | `false`| Boolean | Optional | Whether or not users can request tokens with a longer lifetime than the Keycloak configuration. | `true` |
+| `KEYCLOAK_LONG_LIVED_ROLE_NAME` | `long_lived_token`| String | Optional | The realm role an exchange token must have to request a long-lived-token. | `my-custom-role-for-long-lived-tokens` |
 
 ### Standalone install
 
@@ -63,7 +63,7 @@ If you are using the official Docker image, here is a `Dockerfile` that automate
 ```
 FROM jboss/keycloak:4.5.0.Final
 
-COPY keycloak-configurable-token-0.4.jar /tmp/keycloak-configurable-token.jar
+COPY keycloak-configurable-token-0.5.jar /tmp/keycloak-configurable-token.jar
 RUN /opt/jboss/keycloak/bin/jboss-cli.sh --command="module add --name=be.looorent.keycloak-configurable-token --resources=/tmp/keycloak-configurable-token.jar --dependencies=org.keycloak.keycloak-core,org.keycloak.keycloak-common,org.keycloak.keycloak-server-spi,org.keycloak.keycloak-server-spi-private,org.keycloak.keycloak-services,org.jboss.logging,javax.ws.rs.api"
 RUN sed -i -- 's/classpath:${jboss.home.dir}\/providers\/\*/classpath:${jboss.home.dir}\/providers\/*<\/provider><provider>module:be.looorent.keycloak-configurable-token/g' /opt/jboss/keycloak/standalone/configuration/standalone.xml
 ```
@@ -98,7 +98,7 @@ Example using CURL:
 Request's body must be in JSON an include an attribute `tokenLifespanInSeconds` (that must be strictly positive). 
 A very long lifespan (limited to the Java `integer` type) can be provided. For example: `31556952` means `1 year`.
 
-The environment variable named `KEYCLOAK_LONG_LIVED_TOKEN_ALLOWED` must be set to `true`, otherwise `tokenLifespanInSeconds` will be ignored.
+The exchanging token must include the realm role defined by the environment variable named `KEYCLOAK_LONG_LIVED_ROLE_NAME`, otherwise `tokenLifespanInSeconds` will be ignored. Pay attention this role must be present in the exchange token itself, not on the Keycloak user only.
 
 Example using CURL:
 ```

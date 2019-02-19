@@ -1,6 +1,5 @@
 package be.looorent;
 
-import static java.lang.Boolean.parseBoolean;
 import static java.lang.System.getenv;
 /**
  * Configures this API.
@@ -8,26 +7,35 @@ import static java.lang.System.getenv;
  */
 public class ConfigurationTokenResourceConfiguration {
 
-    private static final String KEYCLOAK_LONG_LIVED_TOKEN_ALLOWED = "KEYCLOAK_LONG_LIVED_TOKEN_ALLOWED";
+    private static final String KEYCLOAK_LONG_LIVED_ROLE_NAME = "KEYCLOAK_LONG_LIVED_ROLE_NAME";
+    private static final String DEFAULT_KEYCLOAK_LONG_LIVED_ROLE_NAME = "long_lived_token";
 
-    private final boolean longLivedTokenAllowed;
+    private final String longLivedTokenRole;
 
     public static ConfigurationTokenResourceConfiguration readFromEnvironment() {
-        String environmentLongLivedAllowed = getenv(KEYCLOAK_LONG_LIVED_TOKEN_ALLOWED);
-        boolean areLongLivedAllowed = environmentLongLivedAllowed != null && parseBoolean(environmentLongLivedAllowed);
-        return new ConfigurationTokenResourceConfiguration(areLongLivedAllowed);
+        String longLivedTokenRole = readLongLivedRoleFromEnvironment();
+        return new ConfigurationTokenResourceConfiguration(longLivedTokenRole);
     }
 
-    public ConfigurationTokenResourceConfiguration(boolean longLivedTokenAllowed) {
-        this.longLivedTokenAllowed = longLivedTokenAllowed;
+    public ConfigurationTokenResourceConfiguration(String longLivedTokenRole) {
+        this.longLivedTokenRole = longLivedTokenRole;
     }
 
-    public boolean isLongLivedTokenAllowed() {
-        return longLivedTokenAllowed;
+    public String getLongLivedTokenRole() {
+        return longLivedTokenRole;
     }
 
     @Override
     public String toString() {
-        return "longLivedTokenAllowed=" + longLivedTokenAllowed;
+        return "longLivedTokenRole=" + longLivedTokenRole;
+    }
+
+    private static String readLongLivedRoleFromEnvironment() {
+        String roleForLongLivedTokens = getenv(KEYCLOAK_LONG_LIVED_ROLE_NAME);
+        if (roleForLongLivedTokens == null || roleForLongLivedTokens.trim().isEmpty()) {
+            return DEFAULT_KEYCLOAK_LONG_LIVED_ROLE_NAME;
+        } else {
+            return roleForLongLivedTokens;
+        }
     }
 }

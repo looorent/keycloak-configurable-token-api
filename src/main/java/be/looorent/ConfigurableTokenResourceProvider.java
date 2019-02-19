@@ -64,7 +64,7 @@ public class ConfigurableTokenResourceProvider implements RealmResourceProvider 
         AuthenticationManager.AuthResult authenticated = new AppAuthManager().authenticateBearerToken(session, realm);
         UserModel user = authenticated.getUser();
         UserSessionModel userSession = authenticated.getSession();
-        ClientModel client = realm.getClientByClientId(authenticated.getToken().getAudience()[0]);
+        ClientModel client = realm.getClientByClientId(authenticated.getToken().getIssuedFor());
         AuthenticatedClientSessionModel clientSession = userSession.getAuthenticatedClientSessionByClient(client.getId());
 
         AccessToken token = createAccessToken(realm, user, userSession, client, clientSession);
@@ -107,6 +107,7 @@ public class ConfigurableTokenResourceProvider implements RealmResourceProvider 
     }
 
     private void updateTokenExpiration(AccessToken token, TokenConfiguration tokenConfiguration) {
-        token.expiration(tokenConfiguration.computeTokenExpiration(token.getExpiration(), configuration.isLongLivedTokenAllowed()));
+        boolean longLivedTokenAllowed = token.getRealmAccess().getRoles().contains(configuration.getLongLivedTokenRole());
+        token.expiration(tokenConfiguration.computeTokenExpiration(token.getExpiration(), longLivedTokenAllowed));
     }
 }
