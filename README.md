@@ -12,6 +12,7 @@ Pay attention to your Keycloak version!
 
 * For Keycloak `3.x.x`, use version <= 0.1 of this JAR. 
 * For Keycloak `4.x.x`, use version > 0.1 of this JAR.
+* For Keycloak `9.x.x`, use version >= 1.0.0 of this JAR.
 
 ## Supported features
 
@@ -61,7 +62,7 @@ Therefore using the CLI is mandatory.
 
 If you are using the official Docker image, here is a `Dockerfile` that automate the install procedure described above:
 ```
-FROM jboss/keycloak:4.5.0.Final
+FROM jboss/keycloak:9.0.0.Final
 
 COPY keycloak-configurable-token-0.5.jar /tmp/keycloak-configurable-token.jar
 RUN /opt/jboss/keycloak/bin/jboss-cli.sh --command="module add --name=be.looorent.keycloak-configurable-token --resources=/tmp/keycloak-configurable-token.jar --dependencies=org.keycloak.keycloak-core,org.keycloak.keycloak-common,org.keycloak.keycloak-server-spi,org.keycloak.keycloak-server-spi-private,org.keycloak.keycloak-services,org.jboss.logging,javax.ws.rs.api"
@@ -114,5 +115,5 @@ Example using CURL:
 ### Build library
 
 ```bash
-    $ gradle build
+    $ ./gradlew build
 ```

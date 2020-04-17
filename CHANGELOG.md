@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.0 [2019-04-18]
+
+* Compatibility with Keycloak 9
+
 ## 0.5 [2019-02-19] 
 
 * Tested on Keycloak 4.8.3

@@ -90,7 +90,7 @@ public class ConfigurableTokenResourceProvider implements RealmResourceProvider 
                                           ClientModel client,
                                           AuthenticatedClientSessionModel clientSession) {
         LOG.infof("Configurable token requested for username=%s and client=%s on realm=%s", user.getUsername(), client.getClientId(), realm.getName());
-        ClientSessionContext clientSessionContext = fromClientSessionScopeParameter(clientSession);
+        ClientSessionContext clientSessionContext = fromClientSessionScopeParameter(clientSession, session);
         return tokenManager.createClientAccessToken(session, realm, client, user, userSession, clientSessionContext);
     }
 
@@ -100,7 +100,7 @@ public class ConfigurableTokenResourceProvider implements RealmResourceProvider 
                                               AuthenticatedClientSessionModel clientSession,
                                               AccessToken token) {
         EventBuilder eventBuilder = new EventBuilder(realm, session, session.getContext().getConnection());
-        ClientSessionContext clientSessionContext = fromClientSessionScopeParameter(clientSession);
+        ClientSessionContext clientSessionContext = fromClientSessionScopeParameter(clientSession, session);
         return tokenManager.responseBuilder(realm, client, eventBuilder, session, userSession, clientSessionContext)
                 .accessToken(token)
                 .build();
