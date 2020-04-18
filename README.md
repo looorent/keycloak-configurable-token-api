@@ -23,7 +23,7 @@ Pay attention to your Keycloak version!
 
 ### Standalone install
 
-* Download `dist/keycloak-configurable-token-0.5.jar` from this repository
+* Download `dist/keycloak-configurable-token-1.0.0.jar` from this repository
 * Add it to `$KEYCLOAK_HOME/standalone/deployments/`
 
 ### Docker install
@@ -32,7 +32,7 @@ If you are using the official Docker image, here is a `Dockerfile` that automate
 ```
 FROM jboss/keycloak:4.5.0.Final
 
-COPY keycloak-configurable-token-0.5.jar /opt/jboss/keycloak/standalone/deployments/keycloak-configurable-token.jar
+COPY keycloak-configurable-token-1.0.0.jar /opt/jboss/keycloak/standalone/deployments/keycloak-configurable-token.jar
 ```
 
 ## Deployment (`< 0.3`)
