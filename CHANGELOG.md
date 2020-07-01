@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.1 [2020-07-01]
+
+* Introspect access token to give more details when failures occur
+* Capability to use long-term tokens are now based on user model instead of the access token content
+* Compatibility with Keycloak 10
+
 ## 1.0.0 [2019-04-18]
 
 * Compatibility with Keycloak 9

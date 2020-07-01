@@ -13,6 +13,7 @@ Pay attention to your Keycloak version!
 * For Keycloak `3.x.x`, use version <= 0.1 of this JAR. 
 * For Keycloak `4.x.x`, use version > 0.1 of this JAR.
 * For Keycloak `9.x.x`, use version >= 1.0.0 of this JAR.
+* For Keycloak `10.x.x`, use version >= 1.1.0 of this JAR.
 
 ## Supported features
 
@@ -30,9 +31,9 @@ Pay attention to your Keycloak version!
 
 If you are using the official Docker image, here is a `Dockerfile` that automate the install procedure described above:
 ```
-FROM jboss/keycloak:4.5.0.Final
+FROM jboss/keycloak:10.0.2
 
-COPY keycloak-configurable-token-1.0.0.jar /opt/jboss/keycloak/standalone/deployments/keycloak-configurable-token.jar
+COPY keycloak-configurable-token-1.1.0.jar /opt/jboss/keycloak/standalone/deployments/keycloak-configurable-token.jar
 ```
 
 ## Deployment (`< 0.3`)
