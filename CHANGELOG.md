@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.0 [2020-07-22]
+
+* Compatibility with Keycloak 11
+
 ## 1.0.1 [2020-07-01]
 
 * Introspect access token to give more details when failures occur
