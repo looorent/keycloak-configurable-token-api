@@ -134,7 +134,7 @@ public class ConfigurableTokenResourceProvider implements RealmResourceProvider 
 
     private UserSessionModel findSession() throws ConfigurableTokenException {
         RealmModel realm = session.getContext().getRealm();
-        AuthenticationManager.AuthResult authenticated = new AppAuthManager().authenticateBearerToken(session, realm);
+        AuthenticationManager.AuthResult authenticated = new AppAuthManager.BearerTokenAuthenticator(session).authenticate();
 
         if (authenticated == null) {
             LOG.warn("Keycloak-ConfigurableToken: user not authenticated");

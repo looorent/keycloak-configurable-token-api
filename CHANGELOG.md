@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.3.0 [2020-12-19]
+
+* Compatibility with Keycloak 12
+
 ## 1.2.0 [2020-07-22]
 
 * Compatibility with Keycloak 11
