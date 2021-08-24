@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.5.0 [2021-08-24]
+
+* Compatibility with Keycloak 15
+
+## 1.4.0 [2021-06-18]
+
+* Compatibility with Keycloak 14
+
 ## 1.3.0 [2020-12-19]
 
 * Compatibility with Keycloak 12

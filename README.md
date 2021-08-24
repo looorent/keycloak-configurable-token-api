@@ -16,6 +16,8 @@ Pay attention to your Keycloak version!
 * For Keycloak `10.x.x`, use version >= 1.1.0 of this JAR.
 * For Keycloak `11.x.x`, use version >= 1.2.0 of this JAR.
 * For Keycloak `12.x.x`, use version >= 1.3.0 of this JAR.
+* For Keycloak `14.x.x`, use version >= 1.4.0 of this JAR.
+* For Keycloak `1.x.x`, use version >= 1.5.0 of this JAR.
 
 ## Supported features
 
@@ -26,16 +28,16 @@ Pay attention to your Keycloak version!
 
 ### Standalone install
 
-* Download `dist/keycloak-configurable-token-1.3.0.jar` from this repository
+* Download `dist/keycloak-configurable-token-1.4.0.jar` from this repository
 * Add it to `$KEYCLOAK_HOME/standalone/deployments/`
 
 ### Docker install
 
 If you are using the official Docker image, here is a `Dockerfile` that automate the install procedure described above:
 ```
-FROM jboss/keycloak:12.0.1
+FROM jboss/keycloak:15.0.0
 
-COPY keycloak-configurable-token-1.3.0.jar /opt/jboss/keycloak/standalone/deployments/keycloak-configurable-token.jar
+COPY keycloak-configurable-token-1.5.0.jar /opt/jboss/keycloak/standalone/deployments/keycloak-configurable-token.jar
 ```
 
 ## Deployment (`< 0.3`)
@@ -65,7 +67,7 @@ Therefore using the CLI is mandatory.
 
 If you are using the official Docker image, here is a `Dockerfile` that automate the install procedure described above:
 ```
-FROM jboss/keycloak:12.0.1.Final
+FROM jboss/keycloak:14.0.0.Final
 
 COPY keycloak-configurable-token-1.3.0.jar /tmp/keycloak-configurable-token.jar
 RUN /opt/jboss/keycloak/bin/jboss-cli.sh --command="module add --name=be.looorent.keycloak-configurable-token --resources=/tmp/keycloak-configurable-token.jar --dependencies=org.keycloak.keycloak-core,org.keycloak.keycloak-common,org.keycloak.keycloak-server-spi,org.keycloak.keycloak-server-spi-private,org.keycloak.keycloak-services,org.jboss.logging,javax.ws.rs.api"
