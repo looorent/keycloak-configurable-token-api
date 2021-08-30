@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.5.1 [2021-08-30]
+
+* Compatibility with Keycloak 15.0.2
+* Update user session's timestamp
+
 ## 1.5.0 [2021-08-24]
 
 * Compatibility with Keycloak 15

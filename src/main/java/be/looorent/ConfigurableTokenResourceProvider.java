@@ -2,7 +2,6 @@ package be.looorent;
 
 import org.jboss.logging.Logger;
 import org.jboss.resteasy.spi.HttpRequest;
-import org.keycloak.OAuthErrorException;
 import org.keycloak.TokenVerifier;
 import org.keycloak.common.VerificationException;
 import org.keycloak.crypto.SignatureProvider;
@@ -99,20 +98,18 @@ public class ConfigurableTokenResourceProvider implements RealmResourceProvider 
         try {
             RealmModel realm = session.getContext().getRealm();
             String tokenString = readAccessTokenFrom(request);
-            TokenVerifier<AccessToken> verifier = TokenVerifier.create(tokenString, AccessToken.class).withChecks(
+            @SuppressWarnings("unchecked") TokenVerifier<AccessToken> verifier = TokenVerifier.create(tokenString, AccessToken.class).withChecks(
                     TokenVerifier.IS_ACTIVE,
                     new TokenVerifier.RealmUrlCheck(Urls.realmIssuer(session.getContext().getUri().getBaseUri(), realm.getName()))
             );
             SignatureVerifierContext verifierContext = session.getProvider(SignatureProvider.class, verifier.getHeader().getAlgorithm().name()).verifier(verifier.getHeader().getKeyId());
             verifier.verifierContext(verifierContext);
             AccessToken accessToken = verifier.verify().getToken();
-            if (!tokenManager.checkTokenValidForIntrospection(session, realm, accessToken)) {
+            if (!tokenManager.checkTokenValidForIntrospection(session, realm, accessToken, true)) {
                 throw new VerificationException("introspection_failed");
             }
             return accessToken;
-        } catch (ConfigurableTokenException e) {
-            throw e;
-        } catch (VerificationException | OAuthErrorException e) {
+        } catch (VerificationException e) {
             LOG.warn("Keycloak-ConfigurableToken: introspection of token failed", e);
             throw new ConfigurableTokenException("access_token_introspection_failed: "+e.getMessage());
         }
@@ -125,7 +122,7 @@ public class ConfigurableTokenResourceProvider implements RealmResourceProvider 
             throw new ConfigurableTokenException("bearer_token_missing_in_authorization_header");
         }
         String token = authorization.substring(7);
-        if (token == null || token.isEmpty()) {
+        if (token.isEmpty()) {
             LOG.warn("Keycloak-ConfigurableToken: empty access token");
             throw new ConfigurableTokenException("missing_access_token");
         }
@@ -133,7 +130,6 @@ public class ConfigurableTokenResourceProvider implements RealmResourceProvider 
     }
 
     private UserSessionModel findSession() throws ConfigurableTokenException {
-        RealmModel realm = session.getContext().getRealm();
         AuthenticationManager.AuthResult authenticated = new AppAuthManager.BearerTokenAuthenticator(session).authenticate();
 
         if (authenticated == null) {
@@ -189,7 +185,7 @@ public class ConfigurableTokenResourceProvider implements RealmResourceProvider 
         boolean longLivedTokenAllowed = ofNullable(session.getContext().getRealm().getRole(this.configuration.getLongLivedTokenRole()))
                 .map(user::hasRole)
                 .orElse(false);
-        token.expiration(tokenConfiguration.computeTokenExpiration(token.getExpiration(), longLivedTokenAllowed));
+        token.expiration(tokenConfiguration.computeTokenExpiration(token.getExp(), longLivedTokenAllowed));
     }
 
     static class ConfigurableTokenException extends Exception {

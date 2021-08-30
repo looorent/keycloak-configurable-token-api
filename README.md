@@ -4,7 +4,7 @@ This Custom Keycloak REST API provides an extra endpoint to request a token that
 
 It adds an endpoint `POST ${serverDomain}/auth/realms/${realm}/configurable-token`. Its configuration is provided in the request's body.
 
-This implementation is based on the token exchance principle, defined here: https://github.com/keycloak/keycloak-documentation/blob/master/securing_apps/topics/token-exchange/token-exchange.adoc
+This implementation is based on the token exchange principle, defined here: https://github.com/keycloak/keycloak-documentation/blob/master/securing_apps/topics/token-exchange/token-exchange.adoc
 
 ## Keycloak Support
 
@@ -17,7 +17,8 @@ Pay attention to your Keycloak version!
 * For Keycloak `11.x.x`, use version >= 1.2.0 of this JAR.
 * For Keycloak `12.x.x`, use version >= 1.3.0 of this JAR.
 * For Keycloak `14.x.x`, use version >= 1.4.0 of this JAR.
-* For Keycloak `1.x.x`, use version >= 1.5.0 of this JAR.
+* For Keycloak `15.x.x` < `15.0.2`, use version >= 1.5.0 of this JAR.
+* For Keycloak `>= 15.0.2`, use version >= 1.5.1 of this JAR.
 
 ## Supported features
 
@@ -33,17 +34,17 @@ Pay attention to your Keycloak version!
 
 ### Docker install
 
-If you are using the official Docker image, here is a `Dockerfile` that automate the install procedure described above:
+If you are using the official Docker image, here is a `Dockerfile` that automate the installation procedure described above:
 ```
-FROM jboss/keycloak:15.0.0
+FROM jboss/keycloak:15.0.1
 
-COPY keycloak-configurable-token-1.5.0.jar /opt/jboss/keycloak/standalone/deployments/keycloak-configurable-token.jar
+COPY keycloak-configurable-token-1.5.1.jar /opt/jboss/keycloak/standalone/deployments/keycloak-configurable-token.jar
 ```
 
 ## Deployment (`< 0.3`)
 
 Before `0.3`, this library cannot be deployed properly as a module with dependencies without using the CLI.
-Therefore using the CLI is mandatory.
+Therefore, using the CLI is mandatory.
 
 ### Environment variables
 
@@ -65,7 +66,7 @@ Therefore using the CLI is mandatory.
 
 ### Docker install
 
-If you are using the official Docker image, here is a `Dockerfile` that automate the install procedure described above:
+If you are using the official Docker image, here is a `Dockerfile` that automate the installation procedure described above:
 ```
 FROM jboss/keycloak:14.0.0.Final
 
@@ -92,7 +93,7 @@ RUN sed -i -- 's/classpath:${jboss.home.dir}\/providers\/\*/classpath:${jboss.ho
 
 ### Specify a short-lived token
 
-Request's body must be in JSON an include an attribute `tokenLifespanInSeconds` (that must be strictly positive).
+Request's body must be in JSON and include an attribute `tokenLifespanInSeconds` (that must be strictly positive).
 
 Example using CURL:
 ```
@@ -101,7 +102,7 @@ Example using CURL:
 
 ### Specify a long-lived token
 
-Request's body must be in JSON an include an attribute `tokenLifespanInSeconds` (that must be strictly positive). 
+Request's body must be in JSON and include an attribute `tokenLifespanInSeconds` (that must be strictly positive). 
 A very long lifespan (limited to the Java `integer` type) can be provided. For example: `31556952` means `1 year`.
 
 The exchanging token must include the realm role defined by the environment variable named `KEYCLOAK_LONG_LIVED_ROLE_NAME`, otherwise `tokenLifespanInSeconds` will be ignored. Pay attention this role must be present in the exchange token itself, not on the Keycloak user only.
