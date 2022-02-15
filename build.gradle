@@ -1,12 +1,12 @@
 buildscript {
-    ext.keycloak_version = "15.0.2"
+    ext.keycloak_version = "17.0.0"
     repositories {
         mavenCentral()
     }
 }
 
 group "be.looorent"
-version "1.5.1"
+version "1.7.0"
 
 apply plugin: "java"
 

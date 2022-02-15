@@ -19,6 +19,7 @@ Pay attention to your Keycloak version!
 * For Keycloak `14.x.x`, use version >= 1.4.0 of this JAR.
 * For Keycloak `15.x.x` < `15.0.2`, use version >= 1.5.0 of this JAR.
 * For Keycloak `>= 15.0.2`, use version >= 1.5.1 of this JAR.
+* For Keycloak `>= 17.x.x`, use version >= 1.7.0 of this JAR.
 
 ## Supported features
 
@@ -29,16 +30,16 @@ Pay attention to your Keycloak version!
 
 ### Standalone install
 
-* Download `dist/keycloak-configurable-token-1.4.0.jar` from this repository
+* Download `dist/keycloak-configurable-token-1.7.0.jar` from this repository
 * Add it to `$KEYCLOAK_HOME/standalone/deployments/`
 
 ### Docker install
 
 If you are using the official Docker image, here is a `Dockerfile` that automate the installation procedure described above:
 ```
-FROM jboss/keycloak:15.0.1
+FROM quay.io/keycloak/keycloak:17.0.0
 
-COPY keycloak-configurable-token-1.5.1.jar /opt/jboss/keycloak/standalone/deployments/keycloak-configurable-token.jar
+COPY keycloak-configurable-token-1.7.0.jar /opt/jboss/keycloak/standalone/deployments/keycloak-configurable-token.jar
 ```
 
 ## Deployment (`< 0.3`)
