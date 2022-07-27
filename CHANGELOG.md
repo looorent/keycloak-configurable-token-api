@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.9.0 [2022-07-27]
+
+* Compatibility with Keycloak 19.0.0
+
 ## 1.8.0 [2022-04-21]
 
 * Compatibility with Keycloak 18.0.0
