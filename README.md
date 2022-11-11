@@ -40,9 +40,9 @@ Pay attention to your Keycloak version!
 
 If you are using the official Docker image, here is a `Dockerfile` that automate the installation procedure described above:
 ```
-FROM quay.io/keycloak/keycloak:19.0.0
+FROM quay.io/keycloak/keycloak:20.0.0
 
-COPY keycloak-configurable-token-1.9.0.jar /opt/keycloak/providers/keycloak-configurable-token.jar
+COPY keycloak-configurable-token-1.10.0.jar /opt/keycloak/providers/keycloak-configurable-token.jar
 ```
 
 ## Deployment (`< 0.3`)
