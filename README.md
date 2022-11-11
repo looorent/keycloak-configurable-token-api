@@ -22,6 +22,7 @@ Pay attention to your Keycloak version!
 * For Keycloak `>= 17.x.x`, use version >= 1.7.0 of this JAR.
 * For Keycloak `>= 18.x.x`, use version >= 1.8.0 of this JAR.
 * For Keycloak `>= 19.x.x`, use version >= 1.9.0 of this JAR.
+* For Keycloak `>= 20.x.x`, use version >= 1.10.0 of this JAR.
 
 ## Supported features
 
