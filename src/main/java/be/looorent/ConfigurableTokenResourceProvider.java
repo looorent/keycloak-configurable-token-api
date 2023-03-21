@@ -11,7 +11,7 @@ import org.keycloak.models.*;
 import org.keycloak.protocol.oidc.TokenManager;
 import org.keycloak.representations.AccessToken;
 import org.keycloak.representations.AccessTokenResponse;
-import org.keycloak.services.ErrorResponse;
+import org.keycloak.representations.idm.ErrorRepresentation;
 import org.keycloak.services.Urls;
 import org.keycloak.services.managers.AppAuthManager;
 import org.keycloak.services.managers.AuthenticationManager;
@@ -22,7 +22,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.OPTIONS;
 import javax.ws.rs.POST;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import static java.util.Optional.ofNullable;
@@ -61,22 +61,30 @@ public class ConfigurableTokenResourceProvider implements RealmResourceProvider 
     public void close() {}
 
     @OPTIONS
-    public Response preflight(@Context HttpRequest request) {
-        return Cors.add(request, Response.ok()).auth().preflight().allowedMethods("POST", "OPTIONS").build();
+    public Response preflight() {
+        return Cors.add(session.getContext().getHttpRequest(), Response.ok())
+                .auth()
+                .preflight()
+                .allowedMethods("POST", "OPTIONS")
+                .allowedOrigins(configuration.getCorsOrigins())
+                .build();
     }
 
     @POST
     @Consumes(APPLICATION_JSON)
     @Produces(APPLICATION_JSON)
-    public Response createToken(TokenConfiguration tokenConfiguration, @Context HttpRequest request) {
+    public Response createToken(TokenConfiguration tokenConfiguration) {
+        HttpRequest request = session.getContext().getHttpRequest();
         try {
             AccessToken accessToken = validateTokenAndUpdateSession(request);
             UserSessionModel userSession = this.findSession();
             AccessTokenResponse response = this.createAccessToken(userSession, accessToken, tokenConfiguration);
             return this.buildCorsResponse(request, response);
-        } catch ( ConfigurableTokenException e) {
+        } catch (ConfigurableTokenException e) {
             LOG.error("An error occurred when fetching an access token", e);
-            return ErrorResponse.error(e.getMessage(), BAD_REQUEST);
+            ErrorRepresentation error = new ErrorRepresentation();
+            error.setErrorMessage(e.getMessage());
+            return this.buildCorsResponse(request, Response.status(BAD_REQUEST).entity(error).type(MediaType.APPLICATION_JSON));
         }
     }
 
@@ -157,17 +165,20 @@ public class ConfigurableTokenResourceProvider implements RealmResourceProvider 
         return userSession;
     }
 
-
-    private Response buildCorsResponse(@Context HttpRequest request, AccessTokenResponse response) {
-        Cors cors = Cors.add(request)
-                        .auth()
-                        .allowedMethods("POST")
-                        .auth()
-                        .exposedHeaders(ACCESS_CONTROL_ALLOW_METHODS, ACCESS_CONTROL_ALLOW_ORIGIN)
-                        .allowAllOrigins();
-        return cors.builder(Response.ok(response).type(APPLICATION_JSON_TYPE)).build();
+    private Response buildCorsResponse(HttpRequest request, AccessTokenResponse response) {
+        return buildCorsResponse(request, Response.ok(response).type(APPLICATION_JSON_TYPE));
     }
 
+    private Response buildCorsResponse(HttpRequest request, Response.ResponseBuilder responseBuilder) {
+        return Cors.add(request)
+                .auth()
+                .allowedMethods("POST")
+                .auth()
+                .exposedHeaders(ACCESS_CONTROL_ALLOW_METHODS, ACCESS_CONTROL_ALLOW_ORIGIN)
+                .allowedOrigins(configuration.getCorsOrigins())
+                .builder(responseBuilder)
+                .build();
+    }
 
     private AccessTokenResponse buildResponse(RealmModel realm,
                                               UserSessionModel userSession,

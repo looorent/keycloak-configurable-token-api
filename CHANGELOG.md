@@ -1,5 +1,10 @@
 # Changelog
 
+## 21.0.1 [2023-03-21]
+
+* Make CORS Allowed origins configurable
+* Fix `21.0.0` startup issues
+
 ## 21.0.0 [2023-03-21]
 
 * Compatibility with Keycloak 21.0.0

@@ -43,7 +43,7 @@ If you are using the official Docker image, here is a `Dockerfile` that automate
 ```
 FROM quay.io/keycloak/keycloak:21.0.0
 
-COPY keycloak-configurable-token-21.0.0.jar /opt/keycloak/providers/keycloak-configurable-token.jar
+COPY keycloak-configurable-token-21.0.1.jar /opt/keycloak/providers/keycloak-configurable-token.jar
 ```
 
 ## Deployment (`< 0.3`)
@@ -53,9 +53,11 @@ Therefore, using the CLI is mandatory.
 
 ### Environment variables
 
-| Option | Default Value | Type | Required? | Description  | Example |
-| ---- | ----- | ------ | ----- | ------ | ----- |
-| `KEYCLOAK_LONG_LIVED_ROLE_NAME` | `long_lived_token`| String | Optional | The realm role an exchange token must have to request a long-lived-token. | `my-custom-role-for-long-lived-tokens` |
+| Option                               | Default Value      | Type     | Required? | Description                                                               | Example                                |
+|--------------------------------------|--------------------|----------|-----------|---------------------------------------------------------------------------|----------------------------------------|
+| `KEYCLOAK_LONG_LIVED_ROLE_NAME`      | `long_lived_token` | String   | Optional  | The realm role an exchange token must have to request a long-lived-token. | `my-custom-role-for-long-lived-tokens` |
+| `KEYCLOAK_LONG_LIVED_CORS_ORIGINS`   | `*`                | String[] | Optional  | The Cors Origins allowed for every HTTP call, separated by a commy        | `https://your-website.com`             |
+
 
 ### Standalone install
 
