@@ -1,12 +1,12 @@
 buildscript {
-    ext.keycloak_version = "21.0.0"
+    ext.keycloak_version = "22.0.0"
     repositories {
         mavenCentral()
     }
 }
 
 group "be.looorent"
-version "21.0.1"
+version "22.0.0"
 
 apply plugin: "java"
 
@@ -21,8 +21,8 @@ dependencies {
     compileOnly group: "org.keycloak",                name: "keycloak-server-spi",         version: keycloak_version
     compileOnly group: "org.keycloak",                name: "keycloak-server-spi-private", version: keycloak_version
     compileOnly group: "org.keycloak",                name: "keycloak-services",           version: keycloak_version
-    compileOnly group: "org.jboss.spec.javax.ws.rs",  name: "jboss-jaxrs-api_2.1_spec",    version: "2.0.1.Final"
-    compileOnly group: "org.jboss.logging",           name: "jboss-logging",               version: "3.4.1.Final"
+    compileOnly group: "org.jboss.spec.javax.ws.rs",  name: "jboss-jaxrs-api_2.1_spec",    version: "2.0.2.Final"
+    compileOnly group: "org.jboss.logging",           name: "jboss-logging",               version: "3.5.3.Final"
 }
 
 task copyJar {
