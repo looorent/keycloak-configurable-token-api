@@ -13,7 +13,7 @@ import static be.looorent.ConfigurationTokenResourceConfiguration.readFromEnviro
  * @author Lorent Lempereur
  */
 public class ConfigurableTokenResourceProviderFactory implements RealmResourceProviderFactory {
-
+    static final String ID = "configurable-token";
     private static final Logger LOG = Logger.getLogger(ConfigurableTokenResourceProviderFactory.class);
 
     @Override
@@ -34,6 +34,6 @@ public class ConfigurableTokenResourceProviderFactory implements RealmResourcePr
 
     @Override
     public String getId() {
-        return ConfigurableTokenResourceProvider.ID;
+        return ID;
     }
 }

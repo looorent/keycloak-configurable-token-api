@@ -1,5 +1,13 @@
 # Changelog
 
+## 23.0.3 [2023-12-22]
+
+* Compatibility with Keycloak 23.0.3
+
+## 23.0.0 [2023-11-24]
+
+* Compatibility with Keycloak 23.0.0
+
 ## 22.0.0 [2023-07-11]
 
 * Compatibility with Keycloak 22.0.0
