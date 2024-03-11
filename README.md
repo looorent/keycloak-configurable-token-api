@@ -26,6 +26,7 @@ Pay attention to your Keycloak version!
 * For Keycloak `>= 21.x.x`, use version >= 21.0.0 of this JAR.
 * For Keycloak `>= 22.x.x`, use version >= 22.0.0 of this JAR.
 * For Keycloak `>= 23.x.x`, use version >= 23.0.0 of this JAR.
+* For Keycloak `>= 24.x.x`, use version >= 24.0.0 of this JAR.
 
 ## Supported features
 
@@ -43,9 +44,9 @@ Pay attention to your Keycloak version!
 
 If you are using the official Docker image, here is a `Dockerfile` that automate the installation procedure described above:
 ```
-FROM quay.io/keycloak/keycloak:23.0.3
+FROM quay.io/keycloak/keycloak:24.0.0
 
-COPY keycloak-configurable-token-23.0.3.jar /opt/keycloak/providers/keycloak-configurable-token.jar
+COPY keycloak-configurable-token-24.0.0.jar /opt/keycloak/providers/keycloak-configurable-token.jar
 ```
 
 ## Deployment (`< 0.3`)
@@ -58,7 +59,7 @@ Therefore, using the CLI is mandatory.
 | Option                               | Default Value      | Type     | Required? | Description                                                               | Example                                |
 |--------------------------------------|--------------------|----------|-----------|---------------------------------------------------------------------------|----------------------------------------|
 | `KEYCLOAK_LONG_LIVED_ROLE_NAME`      | `long_lived_token` | String   | Optional  | The realm role an exchange token must have to request a long-lived-token. | `my-custom-role-for-long-lived-tokens` |
-| `KEYCLOAK_LONG_LIVED_CORS_ORIGINS`   | `*`                | String[] | Optional  | The Cors Origins allowed for every HTTP call, separated by a commy        | `https://your-website.com`             |
+| `KEYCLOAK_LONG_LIVED_CORS_ORIGINS`   | `*`                | String[] | Optional  | The Cors Origins allowed for every HTTP call, separated by a comma        | `https://your-website.com`             |
 
 
 ### Standalone install

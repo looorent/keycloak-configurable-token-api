@@ -2,6 +2,7 @@ package be.looorent;
 
 import org.jboss.logging.Logger;
 import org.keycloak.Config;
+import org.keycloak.events.EventBuilder;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.KeycloakSessionFactory;
 import org.keycloak.services.resource.RealmResourceProvider;
@@ -20,7 +21,8 @@ public class ConfigurableTokenResourceProviderFactory implements RealmResourcePr
     public RealmResourceProvider create(KeycloakSession session) {
         ConfigurationTokenResourceConfiguration configuration = readFromEnvironment();
         LOG.infof("Keycloak-ConfigurableToken is configured with: %s", configuration);
-        return new ConfigurableTokenResourceProvider(session, configuration);
+        EventBuilder eventBuilder = new EventBuilder(session.getContext().getRealm(), session);
+        return new ConfigurableTokenResourceProvider(session, eventBuilder, configuration);
     }
 
     @Override

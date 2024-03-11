@@ -1,5 +1,10 @@
 # Changelog
 
+## 24.0.0 [2024-03-11]
+
+* Move to Keycloak 24
+* Make use of the Cors SPI
+
 ## 23.0.3 [2023-12-22]
 
 * Compatibility with Keycloak 23.0.3

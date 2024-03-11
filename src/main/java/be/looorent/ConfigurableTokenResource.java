@@ -18,16 +18,15 @@ import org.keycloak.representations.idm.ErrorRepresentation;
 import org.keycloak.services.Urls;
 import org.keycloak.services.managers.AppAuthManager;
 import org.keycloak.services.managers.AuthenticationManager;
-import org.keycloak.services.resource.RealmResourceProvider;
-import org.keycloak.services.resources.Cors;
+import org.keycloak.services.cors.Cors;
 
 import static jakarta.ws.rs.core.HttpHeaders.AUTHORIZATION;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON_TYPE;
 import static jakarta.ws.rs.core.Response.Status.BAD_REQUEST;
 import static java.util.Optional.ofNullable;
-import static org.keycloak.services.resources.Cors.ACCESS_CONTROL_ALLOW_METHODS;
-import static org.keycloak.services.resources.Cors.ACCESS_CONTROL_ALLOW_ORIGIN;
+import static org.keycloak.services.cors.Cors.ACCESS_CONTROL_ALLOW_METHODS;
+import static org.keycloak.services.cors.Cors.ACCESS_CONTROL_ALLOW_ORIGIN;
 import static org.keycloak.services.util.DefaultClientSessionContext.fromClientSessionScopeParameter;
 
 /**
@@ -39,10 +38,14 @@ public class ConfigurableTokenResource {
 
     private final KeycloakSession session;
     private final TokenManager tokenManager;
+    private final EventBuilder event;
     private final ConfigurationTokenResourceConfiguration configuration;
 
-    ConfigurableTokenResource(KeycloakSession session, ConfigurationTokenResourceConfiguration configuration) {
+    ConfigurableTokenResource(KeycloakSession session,
+                              EventBuilder event,
+                              ConfigurationTokenResourceConfiguration configuration) {
         this.session = session;
+        this.event = event;
         this.tokenManager = new TokenManager();
         this.configuration = configuration;
     }
@@ -50,7 +53,9 @@ public class ConfigurableTokenResource {
     @Path("")
     @OPTIONS
     public Response preflight() {
-        return Cors.add(session.getContext().getHttpRequest(), Response.ok())
+        return session.getProvider(Cors.class)
+                .request(session.getContext().getHttpRequest())
+                .builder(Response.ok())
                 .auth()
                 .preflight()
                 .allowedMethods("POST", "OPTIONS")
@@ -101,7 +106,7 @@ public class ConfigurableTokenResource {
             SignatureVerifierContext verifierContext = session.getProvider(SignatureProvider.class, verifier.getHeader().getAlgorithm().name()).verifier(verifier.getHeader().getKeyId());
             verifier.verifierContext(verifierContext);
             AccessToken accessToken = verifier.verify().getToken();
-            if (!tokenManager.checkTokenValidForIntrospection(session, realm, accessToken, true)) {
+            if (!tokenManager.checkTokenValidForIntrospection(session, realm, accessToken, true, event)) {
                 throw new VerificationException("introspection_failed");
             }
             return accessToken;
@@ -158,7 +163,8 @@ public class ConfigurableTokenResource {
     }
 
     private Response buildCorsResponse(HttpRequest request, Response.ResponseBuilder responseBuilder) {
-        return Cors.add(request)
+        return session.getProvider(Cors.class)
+                .request(request)
                 .auth()
                 .allowedMethods("POST", "OPTIONS")
                 .auth()
