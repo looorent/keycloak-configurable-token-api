@@ -16,14 +16,15 @@ import org.keycloak.representations.AccessToken;
 import org.keycloak.representations.AccessTokenResponse;
 import org.keycloak.representations.idm.ErrorRepresentation;
 import org.keycloak.services.Urls;
+import org.keycloak.services.cors.Cors;
 import org.keycloak.services.managers.AppAuthManager;
 import org.keycloak.services.managers.AuthenticationManager;
-import org.keycloak.services.cors.Cors;
 
 import static jakarta.ws.rs.core.HttpHeaders.AUTHORIZATION;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON_TYPE;
 import static jakarta.ws.rs.core.Response.Status.BAD_REQUEST;
+import static jakarta.ws.rs.core.Response.ok;
 import static java.util.Optional.ofNullable;
 import static org.keycloak.services.cors.Cors.ACCESS_CONTROL_ALLOW_METHODS;
 import static org.keycloak.services.cors.Cors.ACCESS_CONTROL_ALLOW_ORIGIN;
@@ -54,13 +55,11 @@ public class ConfigurableTokenResource {
     @OPTIONS
     public Response preflight() {
         return session.getProvider(Cors.class)
-                .request(session.getContext().getHttpRequest())
-                .builder(Response.ok())
                 .auth()
                 .preflight()
                 .allowedMethods("POST", "OPTIONS")
                 .allowedOrigins(configuration.getCorsOrigins())
-                .build();
+                .add(ok());
     }
 
     @POST
@@ -77,7 +76,7 @@ public class ConfigurableTokenResource {
             LOG.error("An error occurred when fetching an access token", e);
             ErrorRepresentation error = new ErrorRepresentation();
             error.setErrorMessage(e.getMessage());
-            return this.buildCorsResponse(request, Response.status(BAD_REQUEST).entity(error).type(MediaType.APPLICATION_JSON));
+            return buildCorsResponse(Response.status(BAD_REQUEST).entity(error).type(MediaType.APPLICATION_JSON));
         }
     }
 
@@ -99,14 +98,14 @@ public class ConfigurableTokenResource {
         try {
             RealmModel realm = session.getContext().getRealm();
             String tokenString = readAccessTokenFrom(request);
-            @SuppressWarnings("unchecked") TokenVerifier<AccessToken> verifier = TokenVerifier.create(tokenString, AccessToken.class).withChecks(
+            TokenVerifier<AccessToken> verifier = TokenVerifier.create(tokenString, AccessToken.class).withChecks(
                     TokenVerifier.IS_ACTIVE,
                     new TokenVerifier.RealmUrlCheck(Urls.realmIssuer(session.getContext().getUri().getBaseUri(), realm.getName()))
             );
             SignatureVerifierContext verifierContext = session.getProvider(SignatureProvider.class, verifier.getHeader().getAlgorithm().name()).verifier(verifier.getHeader().getKeyId());
             verifier.verifierContext(verifierContext);
             AccessToken accessToken = verifier.verify().getToken();
-            if (!tokenManager.checkTokenValidForIntrospection(session, realm, accessToken, true, event)) {
+            if (tokenManager.checkTokenValidForIntrospection(session, realm, accessToken, event) == null) {
                 throw new VerificationException("introspection_failed");
             }
             return accessToken;
@@ -159,19 +158,17 @@ public class ConfigurableTokenResource {
     }
 
     private Response buildCorsResponse(HttpRequest request, AccessTokenResponse response) {
-        return buildCorsResponse(request, Response.ok(response).type(APPLICATION_JSON_TYPE));
+        return buildCorsResponse(ok(response).type(APPLICATION_JSON_TYPE));
     }
 
-    private Response buildCorsResponse(HttpRequest request, Response.ResponseBuilder responseBuilder) {
+    private Response buildCorsResponse(Response.ResponseBuilder responseBuilder) {
         return session.getProvider(Cors.class)
-                .request(request)
                 .auth()
                 .allowedMethods("POST", "OPTIONS")
                 .auth()
                 .exposedHeaders(ACCESS_CONTROL_ALLOW_METHODS, ACCESS_CONTROL_ALLOW_ORIGIN)
                 .allowedOrigins(configuration.getCorsOrigins())
-                .builder(responseBuilder)
-                .build();
+                .add(responseBuilder);
     }
 
     private AccessTokenResponse buildResponse(RealmModel realm,
@@ -190,7 +187,7 @@ public class ConfigurableTokenResource {
         boolean longLivedTokenAllowed = ofNullable(session.getContext().getRealm().getRole(this.configuration.getLongLivedTokenRole()))
                 .map(user::hasRole)
                 .orElse(false);
-        token.expiration(tokenConfiguration.computeTokenExpiration(token.getExp(), longLivedTokenAllowed));
+        token.exp((long) tokenConfiguration.computeTokenExpiration(token.getExp(), longLivedTokenAllowed));
     }
 
     static class ConfigurableTokenException extends Exception {

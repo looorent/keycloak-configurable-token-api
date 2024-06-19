@@ -27,6 +27,7 @@ Pay attention to your Keycloak version!
 * For Keycloak `>= 22.x.x`, use version >= 22.0.0 of this JAR.
 * For Keycloak `>= 23.x.x`, use version >= 23.0.0 of this JAR.
 * For Keycloak `>= 24.x.x`, use version >= 24.0.0 of this JAR.
+* For Keycloak `>= 25.x.x`, use version >= 25.0.0 of this JAR.
 
 ## Supported features
 
@@ -44,9 +45,9 @@ Pay attention to your Keycloak version!
 
 If you are using the official Docker image, here is a `Dockerfile` that automate the installation procedure described above:
 ```
-FROM quay.io/keycloak/keycloak:24.0.0
+FROM quay.io/keycloak/keycloak:25.0.0
 
-COPY keycloak-configurable-token-24.0.0.jar /opt/keycloak/providers/keycloak-configurable-token.jar
+COPY keycloak-configurable-token-25.0.0.jar /opt/keycloak/providers/keycloak-configurable-token.jar
 ```
 
 ## Deployment (`< 0.3`)

@@ -1,5 +1,9 @@
 # Changelog
 
+## 25.0.0 [2024-06-19]
+
+* Compatibility with Keycloak 25
+
 ## 24.0.0 [2024-03-11]
 
 * Move to Keycloak 24
