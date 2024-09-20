@@ -6,7 +6,7 @@ buildscript {
 }
 
 group "be.looorent"
-version "25.0.0"
+version "25.0.1"
 
 apply plugin: "java"
 

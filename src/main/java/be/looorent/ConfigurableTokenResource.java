@@ -88,6 +88,7 @@ public class ConfigurableTokenResource {
         LOG.infof("Configurable token requested for username=%s and client=%s on realm=%s", userSession.getUser().getUsername(), client.getClientId(), realm.getName());
         AuthenticatedClientSessionModel clientSession = userSession.getAuthenticatedClientSessionByClient(client.getId());
         ClientSessionContext clientSessionContext = fromClientSessionScopeParameter(clientSession, session);
+        session.getContext().setClient(client);
 
         AccessToken newToken = tokenManager.createClientAccessToken(session, realm, client, userSession.getUser(), userSession, clientSessionContext);
         updateTokenExpiration(newToken, tokenConfiguration, userSession.getUser());
