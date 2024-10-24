@@ -1,5 +1,9 @@
 # Changelog
 
+## 26.0.0 [2024-10-09]
+
+* Compatibility with Keycloak 26
+
 ## 25.0.1 [2024-09-20]
 
 * Bugfix: Since Keycloak 24, some properties of the Session's client (like USE_LIGHTWEIGHT_ACCESS_TOKEN_ENABLED) are required to create an access token. Therefore the destination session must be associated to a client.

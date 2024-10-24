@@ -1,12 +1,12 @@
 buildscript {
-    ext.keycloak_version = "25.0.0"
+    ext.keycloak_version = "26.0.0"
     repositories {
         mavenCentral()
     }
 }
 
 group "be.looorent"
-version "25.0.1"
+version "26.0.0"
 
 apply plugin: "java"
 
