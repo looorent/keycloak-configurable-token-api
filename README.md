@@ -2,7 +2,9 @@
 
 This Custom Keycloak REST API provides an extra endpoint to request a token that can override default configuration.
 
-It adds an endpoint `POST ${serverDomain}/auth/realms/${realm}/configurable-token`. Its configuration is provided in the request's body.
+It adds an endpoint `POST ${serverDomain}/realms/${realm}/configurable-token`. Its configuration is provided in the request's body.
+
+> **Note:** Prior to Keycloak 17 (Wildfly), the default base path included `/auth`, e.g. `${serverDomain}/auth/realms/${realm}/configurable-token`.
 
 This implementation is based on the token exchange principle, defined here: https://github.com/keycloak/keycloak-documentation/blob/master/securing_apps/topics/token-exchange/token-exchange.adoc
 
@@ -35,6 +37,13 @@ Pay attention to your Keycloak version!
 * Ask for a short-lived lifespan
 * Ask for a long-lived lifespan
 
+## Environment variables
+
+| Option                               | Default Value      | Type     | Required? | Description                                                               | Example                                |
+|--------------------------------------|--------------------|----------|-----------|---------------------------------------------------------------------------|----------------------------------------|
+| `KEYCLOAK_LONG_LIVED_ROLE_NAME`      | `long_lived_token` | String   | Optional  | The realm role an exchange token must have to request a long-lived-token. | `my-custom-role-for-long-lived-tokens` |
+| `KEYCLOAK_LONG_LIVED_CORS_ORIGINS`   | `*`                | String[] | Optional  | The Cors Origins allowed for every HTTP call, separated by a comma        | `https://your-website.com`             |
+
 ## Deployment (`>= 0.3`)
 
 ### Standalone install
@@ -55,14 +64,6 @@ COPY keycloak-configurable-token-26.5.5.jar /opt/keycloak/providers/keycloak-con
 
 Before `0.3`, this library cannot be deployed properly as a module with dependencies without using the CLI.
 Therefore, using the CLI is mandatory.
-
-### Environment variables
-
-| Option                               | Default Value      | Type     | Required? | Description                                                               | Example                                |
-|--------------------------------------|--------------------|----------|-----------|---------------------------------------------------------------------------|----------------------------------------|
-| `KEYCLOAK_LONG_LIVED_ROLE_NAME`      | `long_lived_token` | String   | Optional  | The realm role an exchange token must have to request a long-lived-token. | `my-custom-role-for-long-lived-tokens` |
-| `KEYCLOAK_LONG_LIVED_CORS_ORIGINS`   | `*`                | String[] | Optional  | The Cors Origins allowed for every HTTP call, separated by a comma        | `https://your-website.com`             |
-
 
 ### Standalone install
 
@@ -109,7 +110,7 @@ Request's body must be in JSON and include an attribute `tokenLifespanInSeconds`
 
 Example using CURL:
 ```
-    $ curl -X POST -d '{ "tokenLifespanInSeconds": 20}' -H "Content-Type: application/json" -H "Authorization: Bearer <user-access-token>" http://auth.service.io/auth/realms/a-realm/configurable-token
+    $ curl -X POST -d '{ "tokenLifespanInSeconds": 20}' -H "Content-Type: application/json" -H "Authorization: Bearer <user-access-token>" http://auth.service.io/realms/a-realm/configurable-token
 ```
 
 ### Specify a long-lived token
@@ -121,7 +122,7 @@ The exchanging token must include the realm role defined by the environment vari
 
 Example using CURL:
 ```
-    $ curl -X POST -d '{ "tokenLifespanInSeconds": 63113904}' -H "Content-Type: application/json" -H "Authorization: Bearer <user-access-token>" http://auth.service.io/auth/realms/a-realm/configurable-token
+    $ curl -X POST -d '{ "tokenLifespanInSeconds": 63113904}' -H "Content-Type: application/json" -H "Authorization: Bearer <user-access-token>" http://auth.service.io/realms/a-realm/configurable-token
 ```
 
 ## Limits

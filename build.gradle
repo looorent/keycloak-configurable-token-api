@@ -25,6 +25,18 @@ dependencies {
     compileOnly "org.keycloak:keycloak-server-spi-private:${keycloak_version}"
     compileOnly "org.keycloak:keycloak-services:${keycloak_version}"
     compileOnly "org.jboss.logging:jboss-logging:3.5.3.Final"
+
+    testImplementation "org.junit.jupiter:junit-jupiter:5.11.4"
+    testRuntimeOnly "org.junit.platform:junit-platform-launcher"
+    testImplementation "org.keycloak:keycloak-common:${keycloak_version}"
+    testImplementation "org.keycloak:keycloak-server-spi:${keycloak_version}"
+    testImplementation "org.keycloak:keycloak-server-spi-private:${keycloak_version}"
+    testImplementation "org.keycloak:keycloak-core:${keycloak_version}"
+    testImplementation "org.jboss.logging:jboss-logging:3.5.3.Final"
+}
+
+tasks.named("test") {
+    useJUnitPlatform()
 }
 
 task copyJar(type: Copy) {
