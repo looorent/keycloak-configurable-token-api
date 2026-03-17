@@ -5,8 +5,8 @@ buildscript {
     }
 }
 
-group "be.looorent"
-version "26.5.5"
+group = "be.looorent"
+version = "26.5.5"
 
 apply plugin: "java"
 
@@ -20,11 +20,11 @@ repositories {
 }
 
 dependencies {
-    compileOnly group: "org.keycloak",                name: "keycloak-core",               version: keycloak_version
-    compileOnly group: "org.keycloak",                name: "keycloak-server-spi",         version: keycloak_version
-    compileOnly group: "org.keycloak",                name: "keycloak-server-spi-private", version: keycloak_version
-    compileOnly group: "org.keycloak",                name: "keycloak-services",           version: keycloak_version
-    compileOnly group: "org.jboss.logging",           name: "jboss-logging",               version: "3.5.3.Final"
+    compileOnly "org.keycloak:keycloak-core:${keycloak_version}"
+    compileOnly "org.keycloak:keycloak-server-spi:${keycloak_version}"
+    compileOnly "org.keycloak:keycloak-server-spi-private:${keycloak_version}"
+    compileOnly "org.keycloak:keycloak-services:${keycloak_version}"
+    compileOnly "org.jboss.logging:jboss-logging:3.5.3.Final"
 }
 
 task copyJar(type: Copy) {
