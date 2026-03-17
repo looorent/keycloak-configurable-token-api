@@ -6,7 +6,8 @@
 * Remove `checkTokenValidForIntrospection` call, which was removed from Keycloak's `TokenManager` in 26.5.5 (https://github.com/keycloak/keycloak/issues/37662).All its checks (client validity, token revocation, session validation, user status) are already performed by BearerTokenAuthenticator.authenticate().
 * Upgrade Gradle from `8.8` to `9.4.0`
 * Remove useless dependency `jboss-jaxrs-api_2.1_spec`
-* Remove Gradle deprecations warning for version 10
+* Remove Gradle deprecations warning for version 10 
+* When no `KEYCLOAK_LONG_LIVED_CORS_ORIGINS` is set, the log now warns explicitly that the * wildcard is a security risk in production and tells the operator which env var to set to fix it.
 
 ## 26.0.0 [2024-10-09]
 

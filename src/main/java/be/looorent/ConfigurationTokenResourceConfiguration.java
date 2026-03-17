@@ -57,7 +57,7 @@ public class ConfigurationTokenResourceConfiguration {
     private static String[] readCorsOrigins() {
         String corsOrigins = getenv(KEYCLOAK_LONG_LIVED_CORS_ORIGINS);
         if (corsOrigins == null || corsOrigins.trim().isEmpty()) {
-            LOG.warnf("Keycloak-ConfigurableToken : no cors origin is defined in environment variables. Using '%s'.", asList(DEFAULT_KEYCLOAK_LONG_LIVED_CORS_ORIGINS));
+            LOG.warnf("Keycloak-ConfigurableToken : no CORS origin is defined in environment variables. Defaulting to '%s'. This allows any origin to call the configurable-token endpoint, which is a security risk in production. Set the %s environment variable to restrict allowed origins.", asList(DEFAULT_KEYCLOAK_LONG_LIVED_CORS_ORIGINS), KEYCLOAK_LONG_LIVED_CORS_ORIGINS);
             return DEFAULT_KEYCLOAK_LONG_LIVED_CORS_ORIGINS;
         } else {
             String[] origins = parseCorsAllowedOrigins(corsOrigins);
