@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.keycloak.common.util.Time;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class TokenConfigurationTest {
 
@@ -98,6 +99,16 @@ class TokenConfigurationTest {
         long result = config.computeTokenExpiration(null, true);
 
         assertEquals(FIXED_TIME + 60L, result);
+    }
+
+    @Test
+    void zeroLifespan_throwsException() {
+        assertThrows(IllegalArgumentException.class, () -> new TokenConfiguration(0));
+    }
+
+    @Test
+    void negativeLifespan_throwsException() {
+        assertThrows(IllegalArgumentException.class, () -> new TokenConfiguration(-1));
     }
 
     @Test

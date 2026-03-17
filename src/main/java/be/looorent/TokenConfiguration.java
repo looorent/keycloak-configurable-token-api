@@ -17,6 +17,9 @@ public class TokenConfiguration {
 
     @JsonCreator
     public TokenConfiguration(@JsonProperty("tokenLifespanInSeconds") Integer tokenLifespanInSeconds) {
+        if (tokenLifespanInSeconds != null && tokenLifespanInSeconds <= 0) {
+            throw new IllegalArgumentException("tokenLifespanInSeconds must be strictly positive");
+        }
         this.tokenLifespanInSeconds = tokenLifespanInSeconds;
     }
 

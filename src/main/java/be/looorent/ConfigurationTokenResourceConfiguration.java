@@ -10,7 +10,7 @@ import static java.util.Arrays.asList;
  * @author Lorent Lempereur
  */
 public class ConfigurationTokenResourceConfiguration {
-    private static final Logger LOG = Logger.getLogger(ConfigurableTokenResourceProviderFactory.class);
+    private static final Logger LOG = Logger.getLogger(ConfigurationTokenResourceConfiguration.class);
 
     private static final String KEYCLOAK_LONG_LIVED_ROLE_NAME = "KEYCLOAK_LONG_LIVED_ROLE_NAME";
     private static final String DEFAULT_KEYCLOAK_LONG_LIVED_ROLE_NAME = "long_lived_token";
@@ -61,7 +61,7 @@ public class ConfigurationTokenResourceConfiguration {
             return DEFAULT_KEYCLOAK_LONG_LIVED_CORS_ORIGINS;
         } else {
             String[] origins = parseCorsAllowedOrigins(corsOrigins);
-            LOG.debugf("Keycloak-LoginActionToken : CORS origin allowed (for sessions) configured: %s", asList(origins));
+            LOG.debugf("Keycloak-ConfigurableToken : CORS origins configured: %s", asList(origins));
             return origins;
         }
     }

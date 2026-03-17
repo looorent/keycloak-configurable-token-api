@@ -115,10 +115,10 @@ public class ConfigurableTokenResource {
             LOG.warn("Keycloak-ConfigurableToken: no authorization header with bearer token");
             throw new ConfigurableTokenException("bearer_token_missing_in_authorization_header");
         }
-        String token = authorization.substring(7);
+        String token = authorization.substring(7).trim();
         if (token.isEmpty()) {
-            LOG.warn("Keycloak-ConfigurableToken: empty access token");
-            throw new ConfigurableTokenException("missing_access_token");
+            LOG.warn("Keycloak-ConfigurableToken: empty access token in authorization header");
+            throw new ConfigurableTokenException("bearer_token_missing_in_authorization_header");
         }
         return token;
     }
