@@ -15,6 +15,8 @@
 * Validate that `tokenLifespanInSeconds` is strictly positive, rejecting zero and negative values
 * Stop leaking `VerificationException` details in error responses returned to clients
 * Remove unnecessary `buildscript` block from `build.gradle`
+* Add GitHub Actions release workflow — pushing a `v*` tag now builds the JAR and publishes it as a GitHub Release
+* Remove `copyJar` task and `dist/` folder from the build process
 
 ## 26.0.0 [2024-10-09]
 

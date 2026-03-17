@@ -33,10 +33,3 @@ dependencies {
 tasks.named("test") {
     useJUnitPlatform()
 }
-
-task copyJar(type: Copy) {
-    into "dist"
-    from "build/libs/keycloak-configurable-token-${version}.jar"
-}
-
-build.finalizedBy(copyJar)

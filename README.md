@@ -31,6 +31,7 @@ Pay attention to your Keycloak version!
 * For Keycloak `>= 24.x.x`, use version >= 24.0.0 of this JAR.
 * For Keycloak `>= 25.x.x`, use version >= 25.0.0 of this JAR.
 * For Keycloak `>= 26.x.x`, use version >= 26.0.0 of this JAR.
+* For Keycloak `>= 26.5.5`, use version >= 26.5.5 of this JAR.
 
 ## Supported features
 
@@ -48,7 +49,7 @@ Pay attention to your Keycloak version!
 
 ### Standalone install
 
-* Download `dist/keycloak-configurable-token-26.5.5.jar` from this repository
+* Download `keycloak-configurable-token-26.5.5.jar` from the [GitHub Releases](../../releases) page
 * Add it to `$KEYCLOAK_HOME/standalone/deployments/`
 
 ### Docker install
@@ -135,4 +136,13 @@ Example using CURL:
 
 ```bash
     $ ./gradlew build
+```
+
+### Release
+
+Pushing a version tag triggers a GitHub Actions workflow that builds the JAR and publishes it as a GitHub Release:
+
+```bash
+    $ git tag v26.5.5
+    $ git push origin v26.5.5
 ```
