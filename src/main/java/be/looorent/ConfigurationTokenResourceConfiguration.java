@@ -47,7 +47,7 @@ public class ConfigurationTokenResourceConfiguration {
     private static String readLongLivedRoleFromEnvironment() {
         String roleForLongLivedTokens = getenv(KEYCLOAK_LONG_LIVED_ROLE_NAME);
         if (roleForLongLivedTokens == null || roleForLongLivedTokens.trim().isEmpty()) {
-            LOG.warn("Keycloak-ConfigurableToken : Long lived role name provided, using default one.");
+            LOG.warn("Keycloak-ConfigurableToken : No long lived role name provided, using default one.");
             return DEFAULT_KEYCLOAK_LONG_LIVED_ROLE_NAME;
         } else {
             return roleForLongLivedTokens;

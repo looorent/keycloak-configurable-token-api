@@ -28,11 +28,9 @@ dependencies {
     compileOnly group: "org.jboss.logging",           name: "jboss-logging",               version: "3.5.3.Final"
 }
 
-task copyJar {
-    copy {
-        into "dist"
-        from "build/libs/keycloak-configurable-token-${version}.jar"
-    }
+task copyJar(type: Copy) {
+    into "dist"
+    from "build/libs/keycloak-configurable-token-${version}.jar"
 }
 
 build.finalizedBy(copyJar)

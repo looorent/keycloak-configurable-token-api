@@ -42,7 +42,6 @@ public class ConfigurableTokenResource {
     private final ConfigurationTokenResourceConfiguration configuration;
 
     ConfigurableTokenResource(KeycloakSession session,
-                              EventBuilder event,
                               ConfigurationTokenResourceConfiguration configuration) {
         this.session = session;
         this.tokenManager = new TokenManager();
@@ -160,7 +159,6 @@ public class ConfigurableTokenResource {
         return session.getProvider(Cors.class)
                 .auth()
                 .allowedMethods("POST", "OPTIONS")
-                .auth()
                 .exposedHeaders(ACCESS_CONTROL_ALLOW_METHODS, ACCESS_CONTROL_ALLOW_ORIGIN)
                 .allowedOrigins(configuration.getCorsOrigins())
                 .add(responseBuilder);
