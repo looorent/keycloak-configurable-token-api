@@ -1,9 +1,4 @@
-buildscript {
-    ext.keycloak_version = "26.5.5"
-    repositories {
-        mavenCentral()
-    }
-}
+ext.keycloak_version = "26.5.5"
 
 group = "be.looorent"
 version = "26.5.5"

@@ -13,6 +13,8 @@
 * Fix copy-paste error in CORS log message (`Keycloak-LoginActionToken` → `Keycloak-ConfigurableToken`)
 * Consolidate empty bearer token error to use the same `bearer_token_missing_in_authorization_header` error code
 * Validate that `tokenLifespanInSeconds` is strictly positive, rejecting zero and negative values
+* Stop leaking `VerificationException` details in error responses returned to clients
+* Remove unnecessary `buildscript` block from `build.gradle`
 
 ## 26.0.0 [2024-10-09]
 

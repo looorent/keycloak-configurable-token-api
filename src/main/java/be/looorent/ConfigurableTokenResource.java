@@ -104,8 +104,8 @@ public class ConfigurableTokenResource {
             verifier.verifierContext(verifierContext);
             return verifier.verify().getToken();
         } catch (VerificationException e) {
-            LOG.warn("Keycloak-ConfigurableToken: introspection of token failed", e);
-            throw new ConfigurableTokenException("access_token_introspection_failed: "+e.getMessage());
+            LOG.warnf("Keycloak-ConfigurableToken: introspection of token failed: %s", e.getMessage());
+            throw new ConfigurableTokenException("access_token_introspection_failed");
         }
     }
 
