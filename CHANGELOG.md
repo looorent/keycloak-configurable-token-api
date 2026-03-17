@@ -9,6 +9,10 @@
 * Remove Gradle deprecations warning for version 10 
 * When no `KEYCLOAK_LONG_LIVED_CORS_ORIGINS` is set, the log now warns explicitly that the * wildcard is a security risk in production and tells the operator which env var to set to fix it.
 * Changed `computeTokenExpiration` to use `long` throughout instead of `int`, avoiding a 2038 overflow
+* Fix `ConfigurationTokenResourceConfiguration` logger using wrong class (`ConfigurableTokenResourceProviderFactory` instead of its own class)
+* Fix copy-paste error in CORS log message (`Keycloak-LoginActionToken` → `Keycloak-ConfigurableToken`)
+* Consolidate empty bearer token error to use the same `bearer_token_missing_in_authorization_header` error code
+* Validate that `tokenLifespanInSeconds` is strictly positive, rejecting zero and negative values
 
 ## 26.0.0 [2024-10-09]
 
