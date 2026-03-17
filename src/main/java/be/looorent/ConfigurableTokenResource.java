@@ -39,14 +39,12 @@ public class ConfigurableTokenResource {
 
     private final KeycloakSession session;
     private final TokenManager tokenManager;
-    private final EventBuilder event;
     private final ConfigurationTokenResourceConfiguration configuration;
 
     ConfigurableTokenResource(KeycloakSession session,
                               EventBuilder event,
                               ConfigurationTokenResourceConfiguration configuration) {
         this.session = session;
-        this.event = event;
         this.tokenManager = new TokenManager();
         this.configuration = configuration;
     }
@@ -105,11 +103,7 @@ public class ConfigurableTokenResource {
             );
             SignatureVerifierContext verifierContext = session.getProvider(SignatureProvider.class, verifier.getHeader().getAlgorithm().name()).verifier(verifier.getHeader().getKeyId());
             verifier.verifierContext(verifierContext);
-            AccessToken accessToken = verifier.verify().getToken();
-            if (tokenManager.checkTokenValidForIntrospection(session, realm, accessToken, event) == null) {
-                throw new VerificationException("introspection_failed");
-            }
-            return accessToken;
+            return verifier.verify().getToken();
         } catch (VerificationException e) {
             LOG.warn("Keycloak-ConfigurableToken: introspection of token failed", e);
             throw new ConfigurableTokenException("access_token_introspection_failed: "+e.getMessage());
@@ -138,18 +132,18 @@ public class ConfigurableTokenResource {
             throw new ConfigurableTokenException("not_authenticated");
         }
 
-        if (authenticated.getToken().getRealmAccess() == null) {
+        if (authenticated.token().getRealmAccess() == null) {
             LOG.warn("Keycloak-ConfigurableToken: no realm associated with authorization");
             throw new ConfigurableTokenException("wrong_realm");
         }
 
-        UserModel user = authenticated.getUser();
+        UserModel user = authenticated.user();
         if (user == null || !user.isEnabled()) {
             LOG.warn("Keycloak-ConfigurableToken: user does not exist or is not enabled");
             throw new ConfigurableTokenException("invalid_user");
         }
 
-        UserSessionModel userSession = authenticated.getSession();
+        UserSessionModel userSession = authenticated.session();
         if (userSession == null) {
             LOG.warn("Keycloak-ConfigurableToken: user does not have any active session");
             throw new ConfigurableTokenException("missing_user_session");

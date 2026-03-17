@@ -1,5 +1,11 @@
 # Changelog
 
+## 26.5.5 [2026-03-17]
+
+* Compatibility with Keycloak 26.5.5
+* Remove `checkTokenValidForIntrospection` call, which was removed from Keycloak's `TokenManager` in 26.5.5 (https://github.com/keycloak/keycloak/issues/37662).All its checks (client validity, token revocation, session validation, user status) are already performed by BearerTokenAuthenticator.authenticate().
+* Upgrade Gradle from `8.8` to `9.4.0`
+
 ## 26.0.0 [2024-10-09]
 
 * Compatibility with Keycloak 26

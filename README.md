@@ -39,16 +39,16 @@ Pay attention to your Keycloak version!
 
 ### Standalone install
 
-* Download `dist/keycloak-configurable-token-23.0.0.jar` from this repository
+* Download `dist/keycloak-configurable-token-26.5.5.jar` from this repository
 * Add it to `$KEYCLOAK_HOME/standalone/deployments/`
 
 ### Docker install
 
 If you are using the official Docker image, here is a `Dockerfile` that automate the installation procedure described above:
 ```
-FROM quay.io/keycloak/keycloak:26.0.0
+FROM quay.io/keycloak/keycloak:26.5.5
 
-COPY keycloak-configurable-token-26.0.0.jar /opt/keycloak/providers/keycloak-configurable-token.jar
+COPY keycloak-configurable-token-26.5.5.jar /opt/keycloak/providers/keycloak-configurable-token.jar
 ```
 
 ## Deployment (`< 0.3`)
