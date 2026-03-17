@@ -24,10 +24,10 @@ public class TokenConfiguration {
         return tokenLifespanInSeconds;
     }
 
-    public int computeTokenExpiration(Long maxExpiration, boolean longLivedTokenAllowed) {
-        int furthestExpiration = ofNullable(maxExpiration).map(Long::intValue).orElse(0);
+    public long computeTokenExpiration(Long maxExpiration, boolean longLivedTokenAllowed) {
+        long furthestExpiration = ofNullable(maxExpiration).orElse(0L);
         return ofNullable(getTokenLifespanInSeconds())
-                .map(lifespan -> currentTime() + lifespan)
+                .map(lifespan -> (long) currentTime() + lifespan)
                 .map(requestedExpiration -> longLivedTokenAllowed ? requestedExpiration : min(furthestExpiration, requestedExpiration))
                 .orElse(furthestExpiration);
     }

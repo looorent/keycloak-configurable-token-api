@@ -180,7 +180,7 @@ public class ConfigurableTokenResource {
         boolean longLivedTokenAllowed = ofNullable(session.getContext().getRealm().getRole(this.configuration.getLongLivedTokenRole()))
                 .map(user::hasRole)
                 .orElse(false);
-        token.exp((long) tokenConfiguration.computeTokenExpiration(token.getExp(), longLivedTokenAllowed));
+        token.exp(tokenConfiguration.computeTokenExpiration(token.getExp(), longLivedTokenAllowed));
     }
 
     static class ConfigurableTokenException extends Exception {

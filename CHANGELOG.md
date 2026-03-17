@@ -8,6 +8,7 @@
 * Remove useless dependency `jboss-jaxrs-api_2.1_spec`
 * Remove Gradle deprecations warning for version 10 
 * When no `KEYCLOAK_LONG_LIVED_CORS_ORIGINS` is set, the log now warns explicitly that the * wildcard is a security risk in production and tells the operator which env var to set to fix it.
+* Changed `computeTokenExpiration` to use `long` throughout instead of `int`, avoiding a 2038 overflow
 
 ## 26.0.0 [2024-10-09]
 
