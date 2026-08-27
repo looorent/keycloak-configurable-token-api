@@ -20,14 +20,18 @@ import org.keycloak.services.cors.Cors;
 import org.keycloak.services.managers.AppAuthManager;
 import org.keycloak.services.managers.AuthenticationManager;
 
+import java.util.List;
+
 import static jakarta.ws.rs.core.HttpHeaders.AUTHORIZATION;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON_TYPE;
 import static jakarta.ws.rs.core.Response.Status.BAD_REQUEST;
 import static jakarta.ws.rs.core.Response.ok;
+import static java.util.Arrays.asList;
 import static java.util.Optional.ofNullable;
 import static org.keycloak.services.cors.Cors.ACCESS_CONTROL_ALLOW_METHODS;
 import static org.keycloak.services.cors.Cors.ACCESS_CONTROL_ALLOW_ORIGIN;
+import static org.keycloak.services.cors.Cors.ACCESS_CONTROL_ALLOW_ORIGIN_WILDCARD;
 import static org.keycloak.services.util.DefaultClientSessionContext.fromClientSessionScopeParameter;
 
 /**
@@ -51,12 +55,11 @@ public class ConfigurableTokenResource {
     @Path("")
     @OPTIONS
     public Response preflight() {
-        return session.getProvider(Cors.class)
+        Cors cors = session.getProvider(Cors.class)
                 .auth()
                 .preflight()
-                .allowedMethods("POST", "OPTIONS")
-                .allowedOrigins(configuration.getCorsOrigins())
-                .add(ok());
+                .allowedMethods("POST", "OPTIONS");
+        return allowConfiguredOrigins(cors).add(ok());
     }
 
     @POST
@@ -68,7 +71,7 @@ public class ConfigurableTokenResource {
             AccessToken accessToken = validateTokenAndUpdateSession(request);
             UserSessionModel userSession = this.findSession();
             AccessTokenResponse response = this.createAccessToken(userSession, accessToken, tokenConfiguration);
-            return this.buildCorsResponse(request, response);
+            return this.buildCorsResponse(response);
         } catch (ConfigurableTokenException e) {
             LOG.error("An error occurred when fetching an access token", e);
             ErrorRepresentation error = new ErrorRepresentation();
@@ -87,7 +90,7 @@ public class ConfigurableTokenResource {
         ClientSessionContext clientSessionContext = fromClientSessionScopeParameter(clientSession, session);
         session.getContext().setClient(client);
 
-        AccessToken newToken = tokenManager.createClientAccessToken(session, realm, client, userSession.getUser(), userSession, clientSessionContext);
+        AccessToken newToken = tokenManager.createClientAccessToken(session, realm, client, userSession.getUser(), userSession, clientSessionContext, clientSessionContext.isOfflineTokenRequested());
         updateTokenExpiration(newToken, tokenConfiguration, userSession.getUser());
         return buildResponse(realm, userSession, client, clientSession, newToken);
     }
@@ -151,17 +154,23 @@ public class ConfigurableTokenResource {
         return userSession;
     }
 
-    private Response buildCorsResponse(HttpRequest request, AccessTokenResponse response) {
+    private Response buildCorsResponse(AccessTokenResponse response) {
         return buildCorsResponse(ok(response).type(APPLICATION_JSON_TYPE));
     }
 
     private Response buildCorsResponse(Response.ResponseBuilder responseBuilder) {
-        return session.getProvider(Cors.class)
+        Cors cors = session.getProvider(Cors.class)
                 .auth()
                 .allowedMethods("POST", "OPTIONS")
-                .exposedHeaders(ACCESS_CONTROL_ALLOW_METHODS, ACCESS_CONTROL_ALLOW_ORIGIN)
-                .allowedOrigins(configuration.getCorsOrigins())
-                .add(responseBuilder);
+                .exposedHeaders(ACCESS_CONTROL_ALLOW_METHODS, ACCESS_CONTROL_ALLOW_ORIGIN);
+        return allowConfiguredOrigins(cors).add(responseBuilder);
+    }
+
+    private Cors allowConfiguredOrigins(Cors cors) {
+        List<String> origins = asList(configuration.getCorsOrigins());
+        return origins.contains(ACCESS_CONTROL_ALLOW_ORIGIN_WILDCARD)
+                ? cors.allowAllOrigins()
+                : cors.checkAllowedOrigins(origins);
     }
 
     private AccessTokenResponse buildResponse(RealmModel realm,
